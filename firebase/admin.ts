@@ -3,20 +3,20 @@ import {getFirestore} from 'firebase-admin/firestore';
 import {getAuth} from 'firebase-admin/auth';
 const initFirebaseAdmin = () =>{
     const apps = getApps();
-
+    const serviceAccount = {
+                    projectId: process.env.project_id,
+                    clientEmail: process.env.client_email,
+                    privateKey: process.env.private_key?.replace(/\\n/g,"\n")
+                }
     if(!apps.length){
         initializeApp(
             {
-                credential: cert({
-                    projectId: process.env.FIREBASE_PRODUCT_ID,
-                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-                    privateKey: process.env.FIREBASE_KEY?.replace(/\\n/g,"\n")
-                })
+                credential: cert(serviceAccount as any)
             }
         )
     }
     return {
-        auth:getAuth,
+        auth:getAuth(),
         db: getFirestore()
     }
 }
