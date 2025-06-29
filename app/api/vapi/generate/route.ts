@@ -1,19 +1,33 @@
-import {generateText} from 'ai';
-import {google} from '@ai-sdk/google'
+import { google } from '@ai-sdk/google';
+import { generateText } from 'ai';
 import { getRandomInterviewCover } from '@/lib/utils';
 import { db } from '@/firebase/admin';
-import { _success } from 'zod/v4/core';
 
 export async function GET() {
     return Response.json({success:true, data:'THANK YOU!'}, {status: 200});
 }
 
 export async function POST(request:Request){
+    console.log('question request generated');
     const {type, role, level, techstack, amount, userid} = await request.json();
 
     try{
+        const googleApiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+
+        // 2. Perform a robust runtime check for undefined/empty string
+        if (!googleApiKey) {
+            console.error('SERVER ERROR: GOOGLE_GENERATIVE_AI_KEY environment variable is not set.');
+            return Response.json(
+                { success: false, error: { message: 'Server configuration error: AI API Key missing.' } },
+                { status: 500 }
+            );
+        }
+
+        // 3. Initialize the model with the now-guaranteed string API key
+        // TypeScript now knows 'googleApiKey' is a string because of the check above.
+        const model = google('gemini-2.0-flash-001');
     const {text : questions} = await generateText({ 
-        model: google('gemini-2.0-flash'),
+        model: model,
         prompt: `Prepare questions for a job interview.
         The job role is ${role}.
         The job experience level is ${level}.
