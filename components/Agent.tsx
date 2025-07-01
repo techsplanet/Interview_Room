@@ -100,6 +100,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
 
         <div className="card-border">
           <div className="card-content">
+            <div className="avatar">
             <Image
               src="/User-Avatar.webp"
               alt="user avatar"
@@ -107,6 +108,8 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
               height={540}
               className="avatar"
             />
+            {isSpeaking && <span className="speakAnimation" />}
+            </div>
           <h3>{userName}</h3>
           </div>
         </div>
