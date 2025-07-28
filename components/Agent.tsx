@@ -88,7 +88,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         <div className="card-interviewer">
           <div className="avatar">
             <Image
-              src="/Ai-avatar.png"
+              src="/Ai-avatar.webp"
               alt="vapi"
               width={165}
               height={165}
