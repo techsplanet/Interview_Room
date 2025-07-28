@@ -22,6 +22,7 @@ interface SavedMessage {
 const Agent = ({ userName, userId, type }: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
 
@@ -108,7 +109,6 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
               height={540}
               className="avatar"
             />
-            {isSpeaking && <span className="speakAnimation" />}
             </div>
           <h3>{userName}</h3>
           </div>
