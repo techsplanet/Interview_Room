@@ -1,18 +1,27 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { Button } from '@/components/ui/button'
-import { Linefont } from 'next/font/google'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import React from 'react'
 import Image from 'next/image'
-import { dummyInterviews } from '@/constants'
 import InterviewCard from '@/components/InterviewCard'
-import { getCurrentUser, getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/auth_action'
+import { getCurrentUser } from '@/lib/actions/auth_action'
+import { getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/general_action'
 
 const page = async() => {
   const user = await getCurrentUser();
 
+  if(!user){
+    // If user is not authenticated, show a message and a link to sign in
+    // This is a server component, so we can directly return the JSX
+    redirect('/signup');
+  }  
+
+  // Fetch user interviews and latest interviews concurrently
+  // Using Promise.all to optimize performance
   const [userInterviews, latestInterviews] = await Promise.all([
-    await getInterviewsByUserId(user?.id!),
-    await getLatestInterviews({userId: user?.id!})
+    await getInterviewsByUserId(user?.id!),     // i can also use user.id directly here since i have checked for null in if condition earlier.
+    await getLatestInterviews({userId: user?.id!}) // Using non-null assertion since we already checked for user nullability
   ]);
 
   const hasPastInterviews = userInterviews?.length > 0;
@@ -42,7 +51,7 @@ const page = async() => {
               <InterviewCard key={interview.id} {...interview} />
             )
           })):(
-            <p>You haven't taken any interviews yet</p>
+            <p>You haven&apos;t taken any interviews yet</p>
           )}
         </div>
       </section>
